@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* Reset básico e estilos globais */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Componentes e utilitários do Tailwind */
+@import "tailwindcss/utilities";
