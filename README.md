@@ -1,9 +1,88 @@
-Esse projeto está sendo desenvolvido para o hackaton do curso de Pós Graduação de Desenvolvimento Fullstack da Fiap.
+# Hackaton - Web
 
-Utiliza React com Next JS, Typescript e Tailwind 4 para a estilização.
 
-O layout é composto pelo Navbar (com o menu superior com as opções Home e Sobre e o formulário de login, se não estiver logado e a opção de sair se estiver logado), o footer e o sidebar (Só é exibido se estiver logado).
+**Tecnologias**
 
-Ao fazer o cadastro o usuário recebe um e-mail para a confirmação do cadastro, e após a confirmação (página verify) pode fazer o login (página login).
+Este projeto utiliza as seguintes tecnologias:
 
-Após o login, o sidebar exibe a opção de atividades, que possui 2 cards: criação de uma nova atividade ou listagem de 2 atividades. A criar uma nova atividade, é aberto o modal (componente createActivityModal.tsx) onde deverá ser escolhido o tipo de atividade, e a partir dai o componente correspondente é acionado. A listagem de atividades exibe todas as atividades cadastradas, com a opção de filtros por categoria ou tipo, e ao clicar no card a atividade é exibida. O botão de gerar link serve para que o professor gere a atividade e encaminhe o link para o aluno, sem que esse precise ser cadastrado na plataforma.
+- [React](https://reactjs.org/)
+- [Next.js](https://nextjs.org/)
+- [Axios](https://axios-http.com/)
+- [Tailwind](https://tailwindcss.com/)
+
+**Pré-requisitos**
+
+Antes de iniciar, certifique-se de ter as ferramentas instaladas:
+
+- [Node.js](https://nodejs.org/)
+- Gerenciador de pacotes (npm ou yarn)
+- API e banco, siga as instruções do projeto: https://github.com/rrsantos1/hackaton
+- API rodando no endereço: http://localhost:3000
+
+**Estrutura do projeto**
+```bash
+hackaton-frontend/
+│
+├── /public
+├── /components - Componentes reutilizáveis
+├── /services - Chamadas HTTP (ex: API)
+├── /contexts - Gerenciamento de estado
+├── /pages - Páginas principais da aplicação
+├── /styles - Configurações de estilos
+├── /utils - Utilidades│ 
+├── .env
+├── package.json
+├── README.md
+├── .eslintrc.json
+├── tailwind.config
+├── postcss.config
+├── tsconfig.json
+├── tsconfig.node.json
+├── next.config
+└── .gitignore
+```
+#### Executando projeto localmente
+
+Clone o projeto
+
+```bash
+  git clone https://github.com/rrsantos1/hackaton-frontend.git
+```
+
+Entre no diretório do projeto
+
+```bash
+  cd hackaton-frontend
+```
+
+Instale as dependências
+
+```bash
+  npm install
+```
+Inicie o servidor
+
+```bash
+  npm run dev
+```
+
+
+### **Rotas da Aplicação**
+
+Abaixo estão listadas as principais rotas da aplicação:
+
+| **Caminho (URL)**     | **Descrição**                        |
+|-----------------------|--------------------------------------|
+| `/`                      | Página principal da aplicação.       |
+| `/about`                 | Página sobre o projeto.       |
+| `/activities/activityPage` | Página de atividades |
+| `/activities/createMenu`       | Página de criar atividade |
+| `/activities/allActivities`     | Página para administração das atividades. |
+| `/activities/{id}`                 | Página da atividade          |
+| `/profile`                  | Página de perfil do usuário          |
+
+### **Criando, editando e excluindo atividades**
+
+Após rodar a API e banco através do projeto indicado, você terá um com as credenciais
+- professor_luiza@fiap.com
+- 123456
