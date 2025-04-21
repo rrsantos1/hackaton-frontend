@@ -84,4 +84,4 @@ Abaixo estão listadas as principais rotas da aplicação:
 
 Após rodar a API e banco através do projeto indicado, você terá um com as credenciais
 - professor_luiza@fiap.com
-- 123456
+- 123456789
