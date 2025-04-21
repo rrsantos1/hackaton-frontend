@@ -97,7 +97,7 @@ const CreateActivity = () => {
   };
 
   return (
-    <div className="h-full bg-green-100 dark:bg-gray-900 py-8 px-4">
+    <div className="h-full bg-green-100 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <Link href="/activities/activityPage" className="text-blue-500 hover:underline mb-4 inline-block">
           &larr; Voltar para Atividades
@@ -105,7 +105,7 @@ const CreateActivity = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Criar Caça-Palavras</h2>
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
           {({ setFieldValue }) => (
-            <Form className="grid grid-cols-1 gap-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">                
+            <Form className="grid grid-cols-1 gap-6 bg-white p-6 rounded-lg shadow-lg">                
               {/* Dados Básicos: Título e Categoria lado a lado */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

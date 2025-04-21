@@ -7,7 +7,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton }
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Activity } from "../../utils/types"; // Importa a interface Activity
-import Image from "next/image"; 
+import Image from "next/image";
 import { useAuth } from "@/context/authContext";
 
 const API_URL = "http://localhost:3001";
@@ -24,14 +24,50 @@ export default function AllActivitiesPage() {
   const router = useRouter();
   const { user, token } = useAuth();
 
+  const activitiesTypes = [
+    {
+      value: "word_search",
+      label: "Caça palavras",
+    },
+    {
+      value: "crossword",
+      label: "Palavras Cruzadas",
+    },
+    {
+      value: "quiz",
+      label: "Quiz",
+    },
+    {
+      value: "cloze",
+      label: "Completar Frases",
+    },
+    {
+      value: "drag_drop",
+      label: "Arrastar e Soltar",
+    },
+    {
+      value: "multiple_choice",
+      label: "Múltipla Escolha",
+    },
+    {
+      value: "sentence_order",
+      label: "Ordenação de Palavras",
+    },
+  ];
+
+  const getTypeLabel = (type: string): string => {
+    const findIndex = activitiesTypes.findIndex((e) => e.value === type);
+    return findIndex === -1 ? type : activitiesTypes[findIndex].label
+  }
+
   useEffect(() => {
-        if (!token) router.push("/");
+    if (!token) router.push("/");
   }, [token, router]);
 
   useEffect(() => {
     if (!token) return;
     const fetchActivities = async () => {
-      try {        
+      try {
         const res = await axios.get(`${API_URL}/activity`, {
           headers: { Authorization: token ? `Bearer ${token}` : "" },
         });
@@ -47,10 +83,7 @@ export default function AllActivitiesPage() {
 
   // Filtra as atividades conforme categoria e tipo
   const filteredActivities = activities.filter((activity) => {
-    return (
-      (!filterCategory || activity.category === filterCategory) &&
-      (!filterType || activity.type === filterType)
-    );
+    return (!filterCategory || activity.category === filterCategory) && (!filterType || activity.type === filterType);
   });
 
   // Calcula as atividades a serem exibidas na página atual
@@ -76,7 +109,7 @@ export default function AllActivitiesPage() {
     if (!window.confirm("Deseja realmente excluir essa atividade?")) {
       return;
     }
-    try {      
+    try {
       await axios.delete(`${API_URL}/activity/${activity.id}`, {
         headers: { Authorization: token ? `Bearer ${token}` : "" },
       });
@@ -86,15 +119,17 @@ export default function AllActivitiesPage() {
     } catch (error) {
       console.error("Erro ao excluir atividade", error);
     }
-  };  
+  };
 
   return (
     <div className="h-full bg-gradient-to-br from-green-100 to-blue-50 py-12 px-8">
       <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-6">Todas as Atividades</h1>
-      
+
       {/* Filtros */}
       <div className="mb-6 flex flex-wrap gap-4 justify-center">
-        <label htmlFor="filterCategory" className="sr-only bg-white">Filtrar por Categoria</label>
+        <label htmlFor="filterCategory" className="sr-only bg-white">
+          Filtrar por Categoria
+        </label>
         <select
           id="filterCategory"
           value={filterCategory}
@@ -102,14 +137,17 @@ export default function AllActivitiesPage() {
             setFilterCategory(e.target.value);
             setCurrentPage(1);
           }}
-          className="px-4 py-2 border rounded bg-white"
-        >
+          className="px-4 py-2 border rounded bg-white">
           <option value="">Todas as Categorias</option>
           {Array.from(new Set(activities.map((a) => a.category))).map((category) => (
-            <option key={category} value={category}>{category}</option>
+            <option key={category} value={category}>
+              {category}
+            </option>
           ))}
         </select>
-        <label htmlFor="filterType" className="sr-only">Filtrar por Tipo</label>
+        <label htmlFor="filterType" className="sr-only">
+          Filtrar por Tipo
+        </label>
         <select
           id="filterType"
           value={filterType}
@@ -117,11 +155,12 @@ export default function AllActivitiesPage() {
             setFilterType(e.target.value);
             setCurrentPage(1);
           }}
-          className="px-4 py-2 border rounded bg-white"
-        >
+          className="px-4 py-2 border rounded bg-white">
           <option value="">Todos os Tipos</option>
-          {Array.from(new Set(activities.map((a) => a.type))).map((type) => (
-            <option key={type} value={type}>{type}</option>
+          {activitiesTypes.map((type) => (
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
           ))}
         </select>
       </div>
@@ -137,40 +176,36 @@ export default function AllActivitiesPage() {
             <div
               key={activity.id}
               className="border bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-2xl transition-transform transform hover:scale-105"
-              onClick={() => handleActivityClick(activity)}
-            >
+              onClick={() => handleActivityClick(activity)}>
               <div className="flex justify-between">
                 {/* Lado esquerdo com informações */}
                 <div className="flex-1">
                   {/* Container para o título e botão de editar */}
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-gray-900">{activity.title}</h3>
-                   
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleUpdate(activity);
-                        }}
-                        color="primary"
-                        aria-label="editar atividade"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteContent(activity);
-                        }}
-                        color="error"
-                        aria-label="excluir conteúdo"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                                      
+
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleUpdate(activity);
+                      }}
+                      color="primary"
+                      aria-label="editar atividade">
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteContent(activity);
+                      }}
+                      color="error"
+                      aria-label="excluir conteúdo">
+                      <DeleteIcon />
+                    </IconButton>
                   </div>
                   <p className="text-gray-600 mt-2">{activity.description}</p>
                   <p className="text-sm text-gray-500 mt-2">Categoria: {activity.category}</p>
-                  <p className="text-sm text-gray-500 mt-1">Tipo: {activity.type}</p>                  
+                  <p className="text-sm text-gray-500 mt-1">Tipo: {getTypeLabel(activity.type)}</p>
                 </div>
                 <Image
                   src={
@@ -182,7 +217,7 @@ export default function AllActivitiesPage() {
                   width={168}
                   height={168}
                   className="object-cover rounded"
-                />                
+                />
               </div>
             </div>
           ))
@@ -193,8 +228,7 @@ export default function AllActivitiesPage() {
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50"
-        >
+          className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50">
           Anterior
         </button>
         <span>
@@ -203,8 +237,7 @@ export default function AllActivitiesPage() {
         <button
           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50"
-        >
+          className="px-4 py-2 bg-gray-300 text-gray-700 rounded disabled:opacity-50">
           Próxima
         </button>
       </div>
@@ -218,38 +251,26 @@ export default function AllActivitiesPage() {
               <button
                 onClick={() => setQuizMode("all")}
                 className={`px-6 py-3 rounded-lg shadow-md text-lg font-semibold transition-colors ${
-                  quizMode === "all"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                }`}
-              >
+                  quizMode === "all" ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                }`}>
                 Ver todas as questões
               </button>
               <button
                 onClick={() => setQuizMode("interactive")}
                 className={`px-6 py-3 rounded-lg shadow-md text-lg font-semibold transition-colors ${
-                  quizMode === "interactive"
-                    ? "bg-indigo-600 text-white"
-                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                }`}
-              >
+                  quizMode === "interactive" ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                }`}>
                 Questão a questão
               </button>
             </div>
           </DialogContent>
           <DialogActions>
-            <button
-              className="px-6 py-2 text-gray-600 hover:text-gray-900"
-              onClick={() => setSelectedActivity(null)}
-            >
+            <button className="px-6 py-2 text-gray-600 hover:text-gray-900" onClick={() => setSelectedActivity(null)}>
               Cancelar
             </button>
             <button
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700"
-              onClick={() =>
-                router.push(`/activities/${selectedActivity.id}?mode=${quizMode}`)
-              }
-            >
+              className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-full shadow-md hover:bg-green-700 transition-all duration-200"
+              onClick={() => router.push(`/activities/${selectedActivity.id}?mode=${quizMode}`)}>
               Iniciar Quiz
             </button>
           </DialogActions>
@@ -265,10 +286,9 @@ export default function AllActivitiesPage() {
             target="_blank"
             rel="noopener noreferrer"
             style={{ wordBreak: "break-all", display: "block", marginBottom: "8px" }}
-            className="text-blue-500 underline"
-          >
+            className="text-blue-500 underline">
             {accessLink}
-          </a>          
+          </a>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setAccessLink(null)} color="primary">

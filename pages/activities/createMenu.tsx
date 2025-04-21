@@ -77,12 +77,12 @@ const CreateActivityMenu = () => {
           {activityOptions.map((option) => (
             <div
               key={option.type}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex flex-col items-center hover:scale-105"
+              className="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:bg-gray-100 transition-colors flex flex-col items-center hover:scale-105"
               onClick={() => handleOptionClick(option.type)}
             >
               <div className="mb-4">{option.icon}</div>
               <h3 className="text-xl font-semibold mb-2">{option.name}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-center">
+              <p className="text-gray-600 text-center">
                 {option.description}
               </p>
             </div>

@@ -138,6 +138,7 @@ const ClozeGame = ({ questions, config }: ClozeGameProps) => {
                   return (
                     <span key={gapIndex} className="inline-block align-middle">
                       {part}
+                      <br />
                       {gapIndex < q.correctAnswers.length && (
                         <>
                           <label

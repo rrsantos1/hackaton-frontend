@@ -35,12 +35,12 @@ export default function ActivityPage() {
           {actions.map((action, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex flex-col items-center hover:scale-105"
+              className="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:bg-gray-100 transition-colors flex flex-col items-center hover:scale-105"
               onClick={() => router.push(action.route)}
             >
               <div className="mb-4">{action.icon}</div>
               <h3 className="text-xl font-semibold mb-2">{action.name}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-center">
+              <p className="text-gray-600 text-center">
                 {action.description}
               </p>
             </div>

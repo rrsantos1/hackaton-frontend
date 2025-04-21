@@ -144,7 +144,7 @@ const WordSearchGame = ({ grid, words, positions, config }: WordSearchGameProps)
           <div className="text-lg font-semibold">Tempo restante: {remainingTime} s</div>
         ) : (
           <button
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-full shadow-md hover:bg-green-700 transition-all duration-200"
             onClick={() => setGameStarted(true)}
           >
             Iniciar

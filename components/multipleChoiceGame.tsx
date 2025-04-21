@@ -160,7 +160,7 @@ const MultipleChoiceGame: React.FC<MultipleChoiceGameProps> = ({ pairs, config }
             className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-full shadow-md hover:bg-green-700 transition-all duration-200"
             onClick={handleStart}
           >
-            Start
+            Iniciar
           </button>
         </div>
       ) : (

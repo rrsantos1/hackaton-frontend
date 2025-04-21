@@ -106,7 +106,7 @@ const CreateSentenceOrderActivity = () => {
   };
 
   return (
-    <div className="min-h-screen bg-green-100 dark:bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-green-100 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <Link href="/activities" className="text-blue-500 hover:underline mb-4 inline-block">
           &larr; Voltar para Atividades
@@ -115,7 +115,7 @@ const CreateSentenceOrderActivity = () => {
 
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
           {({ values, setFieldValue }) => (
-            <Form className="grid grid-cols-1 gap-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+            <Form className="grid grid-cols-1 gap-6 bg-white  p-6 rounded-lg shadow-lg">
               {/* Dados Básicos */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -164,13 +164,13 @@ const CreateSentenceOrderActivity = () => {
               </div>
 
               {/* Seção de Frases */}
-              <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+              <div className="bg-gray-100 p-4 rounded-lg">
                 <h3 className="text-xl font-semibold mb-4">Frases</h3>
                 <FieldArray name="questions">
                   {({ remove, push }) => (
                     <div className="space-y-4">
                       {values.questions.map((_, index) => (
-                        <div key={index} className="border p-4 rounded bg-white dark:bg-gray-800">
+                        <div key={index} className="border p-4 rounded bg-white ">
                           <div className="mb-2">
                             <label className="block font-medium mb-1">Frase</label>
                             <Field
