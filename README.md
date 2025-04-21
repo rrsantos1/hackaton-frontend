@@ -25,11 +25,10 @@ hackaton-frontend/
 │
 ├── /public
 ├── /components - Componentes reutilizáveis
-├── /services - Chamadas HTTP (ex: API)
 ├── /contexts - Gerenciamento de estado
 ├── /pages - Páginas principais da aplicação
 ├── /styles - Configurações de estilos
-├── /utils - Utilidades│ 
+├── /utils - Utilidades
 ├── .env
 ├── package.json
 ├── README.md
