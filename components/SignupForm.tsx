@@ -5,6 +5,7 @@ import axios from 'axios';
 
 export default function SignupForm() {
   const [serverError, setServerError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const initialValues = { name: '', email: '', password: '' };
 
@@ -20,11 +21,10 @@ export default function SignupForm() {
     setServerError("");
     try {
       const response = await axios.post('http://localhost:3001/user', values);
-      // Supondo que uma resposta 200 ou 201 indica sucesso
+      console.log('Resposta do servidor:', response.data);
       if (response.status === 200 || response.status === 201) {
-        console.log('Inscrição realizada com sucesso:', response.data);
+        setSuccessMessage("Cadastro realizado com sucesso.");
         resetForm();
-        // Aqui você pode redirecionar o usuário ou exibir uma mensagem de sucesso
       } else {
         setServerError(response.data.message ?? 'Erro ao criar usuário');
       }
@@ -61,10 +61,11 @@ export default function SignupForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
+            className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700 hover:scale-105"
           >
             Inscrever-se
           </button>
+          {successMessage && <div className="text-green-600 text-sm mt-4">{successMessage}</div>}          
         </Form>
       )}
     </Formik>

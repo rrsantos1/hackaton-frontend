@@ -3,20 +3,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
-
-interface Activity {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  type: string;
-  content?: {
-    questions?: { question: string; options: string[]; correctAnswer: string }[];
-  };
-  config?: { timeLimit?: number; shuffleQuestions?: boolean };
-  coverImage?: string;
-}
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { Activity } from "../../utils/types"; // Importa a interface Activity
+import Image from "next/image"; 
+import { useAuth } from "@/context/authContext";
 
 const API_URL = "http://localhost:3001";
 
@@ -28,18 +20,22 @@ export default function AllActivitiesPage() {
   const [filterCategory, setFilterCategory] = useState<string>("");
   const [filterType, setFilterType] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const activitiesPerPage = 6;
+  const activitiesPerPage = 9;
   const router = useRouter();
+  const { user, token } = useAuth();
 
   useEffect(() => {
+        if (!token) router.push("/");
+  }, [token, router]);
+
+  useEffect(() => {
+    if (!token) return;
     const fetchActivities = async () => {
-      try {
-        const token = localStorage.getItem("token");
+      try {        
         const res = await axios.get(`${API_URL}/activity`, {
           headers: { Authorization: token ? `Bearer ${token}` : "" },
         });
         setActivities(res.data);
-        console.log("Atividades:", res.data);
       } catch (error) {
         console.error("Erro ao buscar atividades", error);
       } finally {
@@ -47,7 +43,7 @@ export default function AllActivitiesPage() {
       }
     };
     fetchActivities();
-  }, []);
+  }, [token]);
 
   // Filtra as atividades conforme categoria e tipo
   const filteredActivities = activities.filter((activity) => {
@@ -72,55 +68,33 @@ export default function AllActivitiesPage() {
     }
   };
 
-  // Função para gerar o token único chamando a rota pública via axios
-  const handleCreateToken = async (activity: Activity, e: React.MouseEvent) => {
-    e.stopPropagation();
-    try {
-      const token = localStorage.getItem("token");
-      const storedUser = localStorage.getItem("user");
-      const user = storedUser ? JSON.parse(storedUser) : null;
-      const userId = user ? user.id : null;
-      const email = user ? user.email : null;
-      const name = user ? user.name : null;
-      
-      const response = await axios.post(
-        `${API_URL}/public/activity/${activity.id}`,
-        { userId, email, name },
-        {
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const uniqueToken = response.data;
-      // Armazena o link no estado para exibição no modal
-      setAccessLink(uniqueToken.accessLink);
-    } catch (error) {
-      console.error("Erro ao gerar token", error);
-      alert("Erro ao gerar token");
-    }
+  const handleUpdate = async (activity: Activity) => {
+    router.push(`/activities/update/${activity.id}`);
   };
 
-  const handleCopyLink = async () => {
-    if (accessLink) {
-      try {
-        await navigator.clipboard.writeText(accessLink);
-        alert("Link copiado para a área de transferência!");
-      } catch (err) {
-        console.error("Erro ao copiar link", err);
-        alert("Não foi possível copiar o link.");
-      }
+  const handleDeleteContent = async (activity: Activity) => {
+    if (!window.confirm("Deseja realmente excluir essa atividade?")) {
+      return;
     }
-  };
+    try {      
+      await axios.delete(`${API_URL}/activity/${activity.id}`, {
+        headers: { Authorization: token ? `Bearer ${token}` : "" },
+      });
+      // Remove a atividade da lista local
+      setActivities((prev) => prev.filter((a) => a.id !== activity.id));
+      router.push("/activities/allActivities");
+    } catch (error) {
+      console.error("Erro ao excluir atividade", error);
+    }
+  };  
 
   return (
     <div className="h-full bg-gradient-to-br from-green-100 to-blue-50 py-12 px-8">
-      <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-4">Todas as Atividades</h1>
+      <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-6">Todas as Atividades</h1>
       
       {/* Filtros */}
-      <div className="mb-4 flex flex-wrap gap-4 justify-center">
-        <label htmlFor="filterCategory" className="sr-only">Filtrar por Categoria</label>
+      <div className="mb-6 flex flex-wrap gap-4 justify-center">
+        <label htmlFor="filterCategory" className="sr-only bg-white">Filtrar por Categoria</label>
         <select
           id="filterCategory"
           value={filterCategory}
@@ -128,7 +102,7 @@ export default function AllActivitiesPage() {
             setFilterCategory(e.target.value);
             setCurrentPage(1);
           }}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded bg-white"
         >
           <option value="">Todas as Categorias</option>
           {Array.from(new Set(activities.map((a) => a.category))).map((category) => (
@@ -143,7 +117,7 @@ export default function AllActivitiesPage() {
             setFilterType(e.target.value);
             setCurrentPage(1);
           }}
-          className="px-4 py-2 border rounded"
+          className="px-4 py-2 border rounded bg-white"
         >
           <option value="">Todos os Tipos</option>
           {Array.from(new Set(activities.map((a) => a.type))).map((type) => (
@@ -152,7 +126,7 @@ export default function AllActivitiesPage() {
         </select>
       </div>
 
-      {/* Grid de atividades em 4 colunas */}
+      {/* Grid de atividades em 3 colunas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {loading ? (
           <p className="text-center text-gray-700 text-xl col-span-full">Carregando atividades...</p>
@@ -168,31 +142,52 @@ export default function AllActivitiesPage() {
               <div className="flex justify-between">
                 {/* Lado esquerdo com informações */}
                 <div className="flex-1">
-                  <h3 className="font-bold text-gray-900">{activity.title}</h3>
+                  {/* Container para o título e botão de editar */}
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-gray-900">{activity.title}</h3>
+                   
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleUpdate(activity);
+                        }}
+                        color="primary"
+                        aria-label="editar atividade"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteContent(activity);
+                        }}
+                        color="error"
+                        aria-label="excluir conteúdo"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                                      
+                  </div>
                   <p className="text-gray-600 mt-2">{activity.description}</p>
                   <p className="text-sm text-gray-500 mt-2">Categoria: {activity.category}</p>
-                  <p className="text-sm text-gray-500 mt-1">Tipo: {activity.type}</p>
-                  {/* Botão para gerar o token único */}
-                  <button
-                    className="mt-4 px-4 py-3 bg-purple-600 text-white rounded-full shadow-md hover:bg-purple-700 transition-all duration-200"
-                    onClick={(e) => handleCreateToken(activity, e)}
-                  >
-                    Gerar Link
-                  </button>
-                </div>                
-                <div className="ml-4">
-                <img
-                  src={`${API_URL}${(activity.coverImage ?? "").startsWith("/") ? activity.coverImage : `/${activity.coverImage}`}`}
-                  alt={activity.title}
-                  className="w-48 h-48 object-cover rounded"
-                />
+                  <p className="text-sm text-gray-500 mt-1">Tipo: {activity.type}</p>                  
                 </div>
+                <Image
+                  src={
+                    activity.coverImage
+                      ? `${API_URL}${activity.coverImage.startsWith("/") ? activity.coverImage : `/${activity.coverImage}`}`
+                      : "/default-placeholder.png" // imagem local no public/
+                  }
+                  alt={activity.title}
+                  width={168}
+                  height={168}
+                  className="object-cover rounded"
+                />                
               </div>
             </div>
           ))
         )}
       </div>
-
       {/* Paginação */}
       <div className="flex justify-center items-center mt-8 gap-4">
         <button
@@ -273,10 +268,7 @@ export default function AllActivitiesPage() {
             className="text-blue-500 underline"
           >
             {accessLink}
-          </a>
-          <Button variant="outlined" onClick={handleCopyLink}>
-            Copiar Link
-          </Button>
+          </a>          
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setAccessLink(null)} color="primary">
